@@ -12,33 +12,23 @@ tags: [ontology, contract]
 
 # Tech Air · 基础设施领域本体契约
 
-> `wiki/infra/` 的本体定义。`ingest`/`recall` 前先读本页。引擎规范见 `.claude/skills/auto-wiki/`，
-> 与 [[wiki/agent/_ontology|agent 母本]] **共用同一套 6 档时间模型、退役不删除协议与三分铁律**——
-> **本页只声明 基础设施 领域特有的节点类型与受控关系词表**，其余一律以引擎 + agent 母本 契约为准。
+> `wiki/infra/` 的本体定义。与 [[wiki/agent/_ontology|agent 母本]] **共用同一套 6 档时间模型、退役不删除协议、三分铁律与受控关系词表**——本页只声明本域的**节点类型示例**。`ingest`/`recall` 前先读母本 + 本页。
 
-## 0. 总原则（同 agent 母本）
-1. **节点 / 数据 / 边 三分**：数值绝不是节点（进 data.db）；关系是边不是页；分类标签是边不是页。
-2. **编译单向**：`Inbox(散文) → ingest → wiki(本体)`。严谨只用在已结晶的知识。
-3. **退役不删除**：T1/T2/T3 任何变化都是「旧行封 valid_to + 插新行」，永不 DELETE，必有 T4 事件盖章。
-
-## 1. 节点判据（同 agent 母本 的「能不能指向就是这一个」）
-能用手指指向「就是这一个」、明年同名还指同一个 → **实体**；必须先讲一段机理才懂 → **概念**。
+## 0–1. 总原则与节点判据
+全部同 [[wiki/agent/_ontology|agent 母本]]：三分铁律（数值进 data.db / 关系是边 / 标签是边）· 编译单向 · 退役不删除 · 「能指向就是这一个 → 实体；要讲机理才懂 → 概念」。
 
 ## 2. 节点类型（=目录=图谱着色）
-| 类型 | 子目录 | 判据 | 例子 |
-|---|---|---|---|
-| ? | `技术/` | <填判据> | <填例子> |
-| ? | `原理/` | <填判据> | <填例子> |
-| ? | `模式/` | <填判据> | <填例子> |
-| ? | `事件/` | <填判据> | <填例子> |
-| ? | `分析/` | <填判据> | <填例子> |
-| ? | `来源/` | <填判据> | <填例子> |
+| 类型 | 子目录 | 实体/概念 | 判据 | 例子 |
+|---|---|---|---|---|
+| 技术/工具 | `技术/` | 实体 | 有官方名/版本的容器、编排、服务器、CICD、可观测工具 | Docker、Kubernetes、Nginx、Containerd、GitHub Actions、ArgoCD、Terraform、Prometheus |
+| 原理/机制 | `原理/` | 概念 | 运行时/部署的通用机理 | 容器隔离（namespace/cgroup）、反向代理、负载均衡、滚动更新、服务发现、声明式编排 |
+| 模式/架构 | `模式/` | 概念 | 部署/运维范式 | 蓝绿部署、金丝雀发布、GitOps、Sidecar、不可变基础设施、微服务编排 |
+| 事件 | `事件/` | 事件 | 有日期+施动者 | 2024-xx-Kubernetes 1.30 发布 |
+| 分析 | `分析/` | 派生视图 | 研究课题页（删了不影响本体） | 「容器编排方案对比」「CICD 流水线设计」 |
+| 来源 | `来源/` | 来源 | 文档/规范，只溯源 | 官方文档、CNCF |
 
-> ⚠️ 脚手架生成的占位表——首次 ingest 前**必须**把每行的判据/例子填实，并删掉本提示。
-
-## 3. 受控关系词表（基础设施 特有；通用词 references/part_of/instance_of 等沿用 agent 母本）
-<在此声明本域的关系词：from_type → to_type，一句话语义。lint 时以此对照，越界边拒绝。>
+## 3. 受控关系词表
+本域**无特有关系词**，全部沿用 [[wiki/agent/_ontology|agent 母本]]（depends_on / built_on / implements / instance_of / part_of / alternative_to / runs_on / classified_as / created_by / changed_by / references）。
 
 ## 4. 跨域连接
-本域作为驱动层时，用 `references` 边连到其他域的「分析/节点」（如 infra/分析 → equity/公司）。
-跨域 wikilink 直接写对方 slug 即可。
+本域是智能体工程的**底层基底**：被 agent 域的节点用签名边 `built_on` 指入（如 agent 的「Agent 服务」→built_on→ infra 的 [[Docker]]）。**同一专名物全库只建一次**——本域建页，agent 域连边引用。
