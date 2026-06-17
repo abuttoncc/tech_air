@@ -10,6 +10,7 @@ confidence: high
 relations:
   - {target: 状态化执行, type: implements}
   - {target: PostgreSQL, type: built_on}
+  - {target: LangChain, type: built_on}
   - {target: 智能体, type: classified_as}
 tags: [实体, 技术]
 ---
@@ -24,5 +25,6 @@ LangChain 生态里把 LLM agent 建模为**有向图状态机**的编排框架�
 
 - **实现**：[[状态化执行]]（implements）—— 图在可序列化 state 上跑，天然支持 checkpoint
 - **持久化依赖**：[[PostgreSQL]]（built_on，跨域 → data）—— checkpointer / store 后端
+- **生态底座**：[[LangChain]]（built_on）—— LangGraph 是 LangChain 的图编排子项目
 - **被构建于其上**：[[deepagents]] —— 高阶 agent harness
 - **分类**：智能体（classified_as）

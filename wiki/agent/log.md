@@ -20,3 +20,12 @@
 - data.db: pages 5（+1）, relations 7（+2）
 - Conflicts: (无)
 - 关联说明: 主要事件源 [[LangGraph]] 在正文以散文连接（无合适受控边表达"下游消费"，不强建）。
+
+## 2026-06-17 — ingest U3（中间件分层编排）
+- Source: 来源/2026-06-17-ablemind-able-alilab（复用）
+- Created: 技术/LangChain, 模式/中间件分层编排
+- Updated: 技术/deepagents（+implements 中间件分层编排）, 技术/LangGraph（+built_on LangChain）
+- Relations: LangGraph→LangChain built_on; 中间件分层编排→LangChain built_on; deepagents→中间件分层编排 implements; LangChain→智能体 classified_as
+- data.db: pages 7（+2）, relations 11（+4）
+- Conflicts: (无)
+- 说明: 纯 agent 域，无跨域边；引入 LangChain 作生态底座，把 LangGraph/中间件模式锚定到统一框架。

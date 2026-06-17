@@ -9,6 +9,7 @@ sources: [2026-06-17-ablemind-able-alilab]
 confidence: high
 relations:
   - {target: LangGraph, type: built_on}
+  - {target: 中间件分层编排, type: implements}
   - {target: 智能体, type: classified_as}
 tags: [实体, 技术]
 ---
@@ -22,4 +23,5 @@ ablemind 用 `deepagents.create_deep_agent()` 构建主 agent：拼接身份文�
 ## 关联
 
 - **构建于其上**：[[LangGraph]]（built_on）—— deepagents 是 LangGraph 的高阶封装
+- **实现的模式**：[[中间件分层编排]]（implements）—— 以中间件组合方式装配 agent 能力
 - **分类**：智能体（classified_as）
