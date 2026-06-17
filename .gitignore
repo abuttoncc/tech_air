@@ -29,6 +29,11 @@ wiki/**/data.db-shm
 .env.*
 !.env.example
 
+# .mcp.json 含明文 API key（anysearch 等），绝不入库（公开仓）。
+# 实际配置放本地 .mcp.json；仓库只留 .mcp.json.example 占位文档。
+.mcp.json
+!.mcp.json.example
+
 # OS / temp
 *.tmp
 *.log
