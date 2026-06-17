@@ -29,3 +29,11 @@
 - data.db: pages 7（+2）, relations 11（+4）
 - Conflicts: (无)
 - 说明: 纯 agent 域，无跨域边；引入 LangChain 作生态底座，把 LangGraph/中间件模式锚定到统一框架。
+
+## 2026-06-18 — ingest U4（供应商中立路由 + 推理内容回传）｜Wave 1 封顶
+- Source: 来源/2026-06-17-ablemind-able-alilab（复用）
+- Created: 模式/供应商中立路由, 原理/推理内容回传
+- Relations: 供应商中立路由→LangChain built_on; 推理内容回传→LangChain built_on
+- data.db: pages 9（+2）, relations 13（+2）
+- Conflicts: (无)
+- 说明: 纯 agent 域。LLM 供应商实体节点（DashScope/OpenAI 等）暂不建——保持"供应商中立"为抽象模式，避免堆 6 个 provider 页。war story 的具体数值（fold +%、事故 conv）留在来源 NOTES，正文只引述结论（不伪造 T0 period）。
