@@ -21,6 +21,13 @@
       "headers": {
         "Authorization": "Bearer ${ANYSEARCH_API_KEY}"
       }
+    },
+    "grok": {
+      "type": "http",
+      "url": "https://grok.lihanlin.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${GROK_MCP_TOKEN}"
+      }
     }
   }
 }
