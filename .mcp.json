@@ -15,15 +15,6 @@
       "args": ["ag-mcp"],
       "env": {}
     },
-    "langsmith": {
-      "type": "stdio",
-      "command": "uvx",
-      "args": ["langsmith-mcp-server"],
-      "env": {
-        "LANGSMITH_API_KEY": "${LANGSMITH_API_KEY}",
-        "LANGSMITH_ENDPOINT": "https://api.smith.langchain.com"
-      }
-    },
     "anysearch": {
       "type": "http",
       "url": "https://api.anysearch.com/mcp",
