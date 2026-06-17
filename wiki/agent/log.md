@@ -12,3 +12,11 @@
 - data.db: pages 4, relations 5（无 T0/T1/T4）
 - Conflicts: (无)
 - 范围说明: 原计划的 FastAPI(web)/Docker(infra) 两个 built_on 靶子未建——图构建本身不准确依赖二者，FastAPI 留待 SSE 服务单元、Docker 留待 U9 沙箱单元，避免越界边。
+
+## 2026-06-17 — ingest U2（Protocol Bridge Pipeline）
+- Source: 来源/2026-06-17-ablemind-able-alilab（复用 U1 来源页）
+- Created: 模式/协议桥接管道
+- Relations: 协议桥接管道→AI SDK v6 built_on（跨域 agent→web）; 协议桥接管道→PostgreSQL built_on（跨域 agent→data，PersistenceTap）
+- data.db: pages 5（+1）, relations 7（+2）
+- Conflicts: (无)
+- 关联说明: 主要事件源 [[LangGraph]] 在正文以散文连接（无合适受控边表达"下游消费"，不强建）。
