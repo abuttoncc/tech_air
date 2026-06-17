@@ -1,0 +1,13 @@
+name: infra
+domain: infra
+direction: 全栈          # 大方向（科技 / 金融），_index.md 据此分组
+ontology_type: domain
+description: 容器 + 服务器 + CICD
+central_entity: 基础设施
+hub: 基础设施                       # Obsidian Hub 页文件名（不含 .md）
+keywords: [容器, container, Docker, Kubernetes, K8s, 服务器, server, CICD, CI/CD, 部署, deploy, DevOps, Nginx, 运维, 流水线, pipeline, 编排, 负载均衡, 反向代理]                 # 路由关键词：ingest/recall 据此判断材料属哪个域
+validator: none
+validator_coverage: none
+schema_version: '2.0'
+created: '2026-06-17'
+updated: '2026-06-17'

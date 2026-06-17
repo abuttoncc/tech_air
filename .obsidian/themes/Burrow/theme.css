@@ -1,0 +1,423 @@
+/* ============================================================
+   BURROW — Air Vault 主题 v0.1
+   陋居纸感报刊风，vault 级：暖纸底 / 墨色文字 / 发丝线 /
+   三字体分工（衬线展示 · 无衬线正文 · 等宽数字）/ 近锐角 /
+   颜色只用于状态与链接。设计 token 与 ref/burrow-dashboard-demo.html
+   及 snippets/dashboard.css 同源。
+
+   铁律：
+   - 不做任何布局魔改（无 masonry / 无多列），布局交给笔记自身
+   - 不使用 emoji；图标只用 Obsidian 内置 lucide 线条图标
+   ============================================================ */
+
+/* ── 设计 token ───────────────────────────────────────────── */
+body {
+  /* 字体：展示衬线 / 正文无衬线 / 等宽 */
+  --burrow-disp: "Fraunces", "Songti SC", "STSong", "Noto Serif SC", serif;
+  --burrow-sans: "Familjen Grotesk", "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  --burrow-mono: "IBM Plex Mono", "SF Mono", "JetBrains Mono", "Menlo", "Noto Sans Mono CJK SC", monospace;
+  --font-text-theme: var(--burrow-sans);
+  --font-interface-theme: var(--burrow-sans);
+  --font-monospace-theme: var(--burrow-mono);
+
+  /* 近锐角 */
+  --radius-s: 2px;
+  --radius-m: 3px;
+  --radius-l: 4px;
+  --radius-xl: 6px;
+
+  /* 标题尺度（报刊：对比强、行高紧） */
+  --h1-size: 1.7em;  --h1-weight: 900;
+  --h2-size: 1.25em; --h2-weight: 700;
+  --h3-size: 1.05em; --h3-weight: 700;
+  --h4-size: 0.95em; --h4-weight: 700;
+  --h5-size: 0.85em; --h5-weight: 700;
+  --h6-size: 0.8em;  --h6-weight: 600;
+  --heading-spacing: 1.6em;
+
+  --bold-weight: 700;
+}
+
+/* ── 亮色：纸与墨 ─────────────────────────────────────────── */
+.theme-light {
+  --paper: #F5F2EA;
+  --paper-2: #EFEBE0;
+  --ink: #1B1812;
+  --ink-2: #5A5547;
+  --ink-3: #8E887A;
+  --hair: #D9D2C2;
+  --hair-2: #C9C1AD;
+  --burrow-red: #C8371F;
+  --burrow-red-deep: #A52C18;
+  --burrow-orange: #E55300;
+  --burrow-orange-deep: #C24600;
+  --burrow-green: #2F7D4E;
+  --burrow-amber: #B5851B;
+
+  --background-primary: var(--paper);
+  --background-primary-alt: var(--paper-2);
+  --background-secondary: var(--paper-2);
+  --background-secondary-alt: #E9E4D6;
+  --background-modifier-hover: rgba(255, 255, 255, 0.55);
+  --background-modifier-active-hover: rgba(229, 83, 0, 0.08);
+  --background-modifier-border: var(--hair);
+  --background-modifier-border-hover: var(--hair-2);
+  --background-modifier-border-focus: var(--ink);
+  --background-modifier-form-field: rgba(255, 255, 255, 0.6);
+
+  --text-normal: var(--ink);
+  --text-muted: var(--ink-2);
+  --text-faint: var(--ink-3);
+  --text-accent: var(--burrow-orange);
+  --text-accent-hover: var(--burrow-orange-deep);
+  --text-on-accent: var(--paper);
+  --text-selection: rgba(229, 83, 0, 0.16);
+  --text-highlight-bg: #F1E6CC;
+
+  --interactive-normal: var(--paper-2);
+  --interactive-hover: #E9E4D6;
+  --interactive-accent: var(--burrow-orange);
+  --interactive-accent-hover: var(--burrow-orange-deep);
+
+  --link-color: var(--ink);
+  --link-color-hover: var(--burrow-orange);
+  --link-external-color: var(--ink-2);
+  --link-external-color-hover: var(--burrow-orange);
+  --link-unresolved-color: var(--ink-3);
+  --link-decoration: none;
+  --link-external-decoration: none;
+
+  --hr-color: var(--hair);
+  --divider-color: var(--hair);
+  --blockquote-border-color: var(--ink);
+  --blockquote-color: var(--ink-2);
+  --code-background: var(--paper-2);
+  --code-normal: var(--ink-2);
+  --embed-border-left: 2px solid var(--ink);
+
+  --tag-background: transparent;
+  --tag-background-hover: var(--paper-2);
+  --tag-color: var(--ink-2);
+  --tag-color-hover: var(--burrow-orange);
+  --tag-border-color: var(--hair-2);
+  --tag-border-color-hover: var(--burrow-orange);
+
+  --checkbox-color: var(--burrow-orange);
+  --checkbox-color-hover: var(--burrow-orange-deep);
+  --checkbox-border-color: var(--ink-3);
+  --checkbox-border-color-hover: var(--ink);
+  --checklist-done-color: var(--ink-3);
+
+  --titlebar-background: var(--paper-2);
+  --titlebar-background-focused: var(--paper-2);
+  --titlebar-text-color: var(--ink-2);
+  --ribbon-background: var(--paper-2);
+  --status-bar-background: var(--paper-2);
+  --status-bar-text-color: var(--ink-3);
+  --status-bar-border-color: var(--hair);
+
+  --tab-background-active: var(--paper);
+  --tab-text-color: var(--ink-3);
+  --tab-text-color-active: var(--ink);
+  --tab-text-color-focused: var(--ink);
+  --tab-text-color-focused-active: var(--ink);
+  --tab-text-color-focused-active-current: var(--ink);
+  --tab-outline-color: var(--hair);
+
+  --nav-item-color: var(--ink-2);
+  --nav-item-color-hover: var(--ink);
+  --nav-item-color-active: var(--ink);
+  --nav-item-background-active: rgba(255, 255, 255, 0.7);
+  --nav-item-background-hover: rgba(255, 255, 255, 0.5);
+
+  --scrollbar-thumb-bg: rgba(27, 24, 18, 0.14);
+  --scrollbar-active-thumb-bg: rgba(27, 24, 18, 0.28);
+  --scrollbar-bg: transparent;
+
+  --table-header-background: transparent;
+  --table-header-background-hover: transparent;
+  --table-row-even-background: transparent;
+  --table-row-alt-background: rgba(255, 255, 255, 0.35);
+  --table-row-background-hover: rgba(229, 83, 0, 0.05);
+  --table-border-color: var(--hair);
+  --table-header-border-color: var(--hair-2);
+
+  --indentation-guide-color: var(--hair);
+  --indentation-guide-color-active: var(--hair-2);
+
+  --caret-color: var(--burrow-orange);
+  --icon-color: var(--ink-2);
+  --icon-color-hover: var(--ink);
+  --icon-color-active: var(--burrow-orange);
+  --icon-color-focused: var(--ink);
+}
+
+/* ── 暗色：夜墨（同一语言的反相） ─────────────────────────── */
+.theme-dark {
+  --paper: #1D1A14;
+  --paper-2: #242017;
+  --ink: #E8E1D0;
+  --ink-2: #B0A78F;
+  --ink-3: #7E7663;
+  --hair: #3A3426;
+  --hair-2: #4A4332;
+  --burrow-red: #D96A4F;
+  --burrow-red-deep: #E5826B;
+  --burrow-orange: #FF7A38;
+  --burrow-orange-deep: #FF9259;
+  --burrow-green: #6FAE8A;
+  --burrow-amber: #C99A3F;
+
+  --background-primary: var(--paper);
+  --background-primary-alt: var(--paper-2);
+  --background-secondary: #181510;
+  --background-secondary-alt: #14110D;
+  --background-modifier-hover: rgba(255, 255, 255, 0.04);
+  --background-modifier-active-hover: rgba(255, 122, 56, 0.1);
+  --background-modifier-border: var(--hair);
+  --background-modifier-border-hover: var(--hair-2);
+  --background-modifier-border-focus: var(--ink);
+  --background-modifier-form-field: rgba(255, 255, 255, 0.04);
+
+  --text-normal: var(--ink);
+  --text-muted: var(--ink-2);
+  --text-faint: var(--ink-3);
+  --text-accent: var(--burrow-orange);
+  --text-accent-hover: var(--burrow-orange-deep);
+  --text-on-accent: var(--paper);
+  --text-selection: rgba(255, 122, 56, 0.22);
+  --text-highlight-bg: rgba(201, 154, 63, 0.25);
+
+  --interactive-normal: var(--paper-2);
+  --interactive-hover: #2B2619;
+  --interactive-accent: var(--burrow-orange);
+  --interactive-accent-hover: var(--burrow-orange-deep);
+
+  --link-color: var(--ink);
+  --link-color-hover: var(--burrow-orange);
+  --link-external-color: var(--ink-2);
+  --link-external-color-hover: var(--burrow-orange);
+  --link-unresolved-color: var(--ink-3);
+  --link-decoration: none;
+  --link-external-decoration: none;
+
+  --hr-color: var(--hair);
+  --divider-color: var(--hair);
+  --blockquote-border-color: var(--ink);
+  --blockquote-color: var(--ink-2);
+  --code-background: var(--paper-2);
+  --code-normal: var(--ink-2);
+  --embed-border-left: 2px solid var(--ink);
+
+  --tag-background: transparent;
+  --tag-background-hover: var(--paper-2);
+  --tag-color: var(--ink-2);
+  --tag-color-hover: var(--burrow-orange);
+  --tag-border-color: var(--hair-2);
+  --tag-border-color-hover: var(--burrow-orange);
+
+  --checkbox-color: var(--burrow-orange);
+  --checkbox-color-hover: var(--burrow-orange-deep);
+  --checkbox-border-color: var(--ink-3);
+  --checkbox-border-color-hover: var(--ink);
+  --checklist-done-color: var(--ink-3);
+
+  --titlebar-background: #181510;
+  --titlebar-background-focused: #181510;
+  --titlebar-text-color: var(--ink-2);
+  --ribbon-background: #181510;
+  --status-bar-background: #181510;
+  --status-bar-text-color: var(--ink-3);
+  --status-bar-border-color: var(--hair);
+
+  --tab-background-active: var(--paper);
+  --tab-text-color: var(--ink-3);
+  --tab-text-color-active: var(--ink);
+  --tab-text-color-focused: var(--ink);
+  --tab-text-color-focused-active: var(--ink);
+  --tab-text-color-focused-active-current: var(--ink);
+  --tab-outline-color: var(--hair);
+
+  --nav-item-color: var(--ink-2);
+  --nav-item-color-hover: var(--ink);
+  --nav-item-color-active: var(--ink);
+  --nav-item-background-active: rgba(255, 255, 255, 0.05);
+  --nav-item-background-hover: rgba(255, 255, 255, 0.03);
+
+  --scrollbar-thumb-bg: rgba(232, 225, 208, 0.12);
+  --scrollbar-active-thumb-bg: rgba(232, 225, 208, 0.24);
+  --scrollbar-bg: transparent;
+
+  --table-header-background: transparent;
+  --table-header-background-hover: transparent;
+  --table-row-even-background: transparent;
+  --table-row-alt-background: rgba(255, 255, 255, 0.025);
+  --table-row-background-hover: rgba(255, 122, 56, 0.07);
+  --table-border-color: var(--hair);
+  --table-header-border-color: var(--hair-2);
+
+  --indentation-guide-color: var(--hair);
+  --indentation-guide-color-active: var(--hair-2);
+
+  --caret-color: var(--burrow-orange);
+  --icon-color: var(--ink-2);
+  --icon-color-hover: var(--ink);
+  --icon-color-active: var(--burrow-orange);
+  --icon-color-focused: var(--ink);
+}
+
+/* ── 纸纹：阅读视图加账本横线（极淡），编辑视图保持干净 ── */
+.theme-light .markdown-preview-view {
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 119px, rgba(27, 24, 18, 0.02) 119px, rgba(27, 24, 18, 0.02) 120px);
+}
+
+/* ── 排版细则 ─────────────────────────────────────────────── */
+/* 选区：墨纸反相 */
+.markdown-source-view ::selection,
+.markdown-preview-view ::selection {
+  background: var(--text-accent);
+  color: var(--background-primary);
+}
+
+/* 笔记大标题与 H1：衬线展示体 */
+.inline-title,
+.markdown-preview-view h1,
+.markdown-rendered h1,
+.cm-header-1 {
+  font-family: var(--burrow-disp);
+  letter-spacing: 0.01em;
+}
+.inline-title { font-weight: 900; }
+
+/* H2：报刊分区线 */
+.markdown-preview-view h2,
+.markdown-rendered h2 {
+  padding-bottom: 0.25em;
+  border-bottom: 1.5px solid var(--text-normal);
+}
+
+/* H5/H6：等宽小标（栏目眉） */
+.markdown-preview-view h5, .markdown-rendered h5,
+.markdown-preview-view h6, .markdown-rendered h6 {
+  font-family: var(--burrow-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* 链接：墨色 + 发丝下划线，悬停转红 */
+.markdown-preview-view a.internal-link,
+.markdown-rendered a.internal-link,
+.cm-hmd-internal-link .cm-underline {
+  text-decoration: underline;
+  text-decoration-color: var(--hair-2);
+  text-underline-offset: 3px;
+}
+.markdown-preview-view a.internal-link:hover,
+.markdown-rendered a.internal-link:hover {
+  text-decoration-color: var(--text-accent);
+}
+
+/* 引用块：墨色竖线 + 衬线斜体 */
+.markdown-preview-view blockquote,
+.markdown-rendered blockquote {
+  border-left: 2px solid var(--blockquote-border-color);
+  padding-left: 1em;
+  font-family: var(--burrow-disp);
+  font-style: italic;
+}
+
+/* 分隔线：细发丝 */
+.markdown-preview-view hr, .markdown-rendered hr {
+  border: none;
+  border-top: 1px solid var(--hr-color);
+}
+
+/* 表格：报刊式——表头等宽大写、横线为主 */
+.markdown-preview-view table, .markdown-rendered table { border-collapse: collapse; }
+.markdown-preview-view th, .markdown-rendered th {
+  font-family: var(--burrow-mono);
+  font-size: 0.74em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  border: none;
+  border-bottom: 1px solid var(--table-header-border-color);
+  background: transparent;
+}
+.markdown-preview-view td, .markdown-rendered td {
+  border: none;
+  border-bottom: 1px solid var(--table-border-color);
+}
+
+/* 代码：纸下一度 + 发丝框 */
+.markdown-preview-view pre, .markdown-rendered pre {
+  background: var(--code-background);
+  border: 1px solid var(--hair);
+  border-radius: var(--radius-m);
+}
+.markdown-preview-view :not(pre) > code,
+.markdown-rendered :not(pre) > code {
+  background: var(--code-background);
+  border-radius: var(--radius-s);
+  padding: 0.1em 0.35em;
+}
+
+/* 标签：等宽细框胶囊 */
+.tag, .cm-hashtag {
+  font-family: var(--burrow-mono);
+  font-size: 0.72em;
+  border: 1px solid var(--tag-border-color);
+  border-radius: 99px;
+  padding: 0.1em 0.6em;
+  background: var(--tag-background);
+}
+
+/* 复选框：方形近锐角 */
+input[type="checkbox"] { border-radius: 2px; }
+
+/* callout：扁平纸卡——半透明白底 + 发丝框 + 等宽眉题 */
+.callout {
+  background: var(--background-modifier-hover);
+  border: 1px solid var(--hair);
+  border-radius: var(--radius-m);
+  mix-blend-mode: normal;
+}
+.callout-title {
+  font-family: var(--burrow-mono);
+  font-size: 0.78em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.callout-title-inner { font-weight: 600; }
+
+/* 嵌入块：左墨线 */
+.markdown-embed { border-left: var(--embed-border-left); border-radius: 0; }
+
+/* ── 工作区铬件 ───────────────────────────────────────────── */
+/* 标签页头：等宽小字 */
+.workspace-tab-header-inner-title {
+  font-family: var(--burrow-mono);
+  font-size: 0.82em;
+  letter-spacing: 0.02em;
+}
+/* 侧栏文件树：紧凑 */
+.nav-file-title, .nav-folder-title { border-radius: var(--radius-s); }
+/* 状态栏：等宽 */
+.status-bar { font-family: var(--burrow-mono); font-size: 0.72em; border-top: 1px solid var(--status-bar-border-color); }
+/* 面板分隔线 */
+.workspace-leaf-resize-handle { background: transparent; }
+.mod-root .workspace-tabs { border-color: var(--hair); }
+
+/* 搜索/输入框 */
+input.prompt-input, .search-input-container input {
+  border-radius: var(--radius-s);
+  border: 1px solid var(--hair-2);
+}
+
+/* 图谱：纸底 */
+.graph-view-container, .mod-global-graph .view-content { background: var(--background-primary); }

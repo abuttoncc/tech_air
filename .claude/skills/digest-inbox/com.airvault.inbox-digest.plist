@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 收集箱消化 · 轮询定时器（对齐 obsidian-git 30 分钟节奏）
+     装载: cp 到 ~/Library/LaunchAgents/ 后 launchctl load（见 SKILL 部署说明）
+     停用: launchctl unload ~/Library/LaunchAgents/com.airvault.inbox-digest.plist -->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.airvault.inbox-digest</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/Users/jameslee/Documents/valu_air/.claude/skills/digest-inbox/run-digest.sh</string>
+  </array>
+
+  <!-- 轮询：每 1800 秒（30 分钟）跑一拍，对齐 obsidian-git autoSaveInterval -->
+  <key>StartInterval</key>
+  <integer>1800</integer>
+
+  <!-- 不在装载时立刻跑，避免意外 -->
+  <key>RunAtLoad</key>
+  <false/>
+
+  <!-- launchd 环境极简，必须显式给 PATH / HOME / 代理（本机走 127.0.0.1:7897） -->
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/Users/jameslee/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    <key>HOME</key>
+    <string>/Users/jameslee</string>
+    <key>NODE_USE_ENV_PROXY</key>
+    <string>1</string>
+    <key>HTTPS_PROXY</key>
+    <string>http://127.0.0.1:7897</string>
+    <key>HTTP_PROXY</key>
+    <string>http://127.0.0.1:7897</string>
+    <key>ALL_PROXY</key>
+    <string>socks5://127.0.0.1:7897</string>
+  </dict>
+
+  <key>StandardOutPath</key>
+  <string>/Users/jameslee/Documents/valu_air/.claude/skills/digest-inbox/launchd.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/jameslee/Documents/valu_air/.claude/skills/digest-inbox/launchd.err.log</string>
+</dict>
+</plist>

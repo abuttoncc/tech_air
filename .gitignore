@@ -1,0 +1,35 @@
+# Obsidian
+.obsidian/workspace*.json
+.obsidian/cache/
+.obsidian/plugins/terminal/
+.trash/
+.DS_Store
+**/.DS_Store
+
+# Claude Code — 共享 skill 引擎 + 项目配置随仓库同步（auto-wiki skill 在 .claude/skills/ 下）。
+# 只把"个人本机设置"排除在外，其余 .claude/ 一律进仓库，别人 pull 即得。
+.claude/settings.local.json
+
+# auto-wiki knowledge base — tracked on purpose.
+# wiki/ is the ontology: it must be visible in the Obsidian graph and versioned
+# with the vault. Do NOT ignore it, and do NOT use a .wiki/ dotfolder
+# (Obsidian hides dot-prefixed folders, so a dotfolder never shows in the graph).
+
+# Python 字节码（skill 脚本运行时生成，不入库）
+__pycache__/
+*.pyc
+
+# auto-wiki 运行产物（可由 data.db + 页面重生成，不必入库；如需可删此两行）
+wiki/**/data.db-wal
+wiki/**/data.db-shm
+
+# 密钥 — .env 含 API token（iFinD refresh_token 等），绝不入库。
+# obsidian-git 自动提交是全量 add，必须显式忽略，否则 token 会被推到远端。
+.env
+.env.*
+!.env.example
+
+# OS / temp
+*.tmp
+*.log
+Thumbs.db

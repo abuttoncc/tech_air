@@ -1,0 +1,20 @@
+{
+  "_note": "本库个性化配置；引擎来自 burrow-core 包（pip install）。改完在两库父目录下跑 `burrow sync tech_air` 渲染回本库。",
+  "title_proper": "Tech Air",
+  "dashboard": {
+    "title": "TECH AIR",
+    "order": ["技术", "原理", "模式", "事件", "分析", "来源"],
+    "labels": ["智能体", "前端", "后端", "数据库", "存储", "容器", "服务器", "CICD"],
+    "navOntology": "wiki/_index",
+    "features": { "pulse": true }
+  },
+  "new_domain": {
+    "mother_ontology_link": "[[wiki/agent/_ontology|agent 母本]]",
+    "mother_ref": "agent 母本"
+  },
+  "relations": {
+    "anchor": ["part_of", "instance_of"],
+    "idea": ["depends_on", "built_on", "implements", "instance_of", "part_of", "runs_on", "alternative_to"],
+    "attrib_only": ["classified_as", "references"]
+  }
+}

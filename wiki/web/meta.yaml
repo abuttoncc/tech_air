@@ -1,0 +1,13 @@
+name: web
+domain: web
+direction: 全栈          # 大方向（科技 / 金融），_index.md 据此分组
+ontology_type: domain
+description: 前端 + 后端技术
+central_entity: 全栈应用
+hub: 全栈应用                       # Obsidian Hub 页文件名（不含 .md）
+keywords: [前端, 后端, frontend, backend, React, Vue, Next.js, Node, API, REST, GraphQL, TypeScript, HTTP, 框架, 全栈, Web, 浏览器, SSR]                 # 路由关键词：ingest/recall 据此判断材料属哪个域
+validator: none
+validator_coverage: none
+schema_version: '2.0'
+created: '2026-06-17'
+updated: '2026-06-17'

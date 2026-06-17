@@ -1,0 +1,13 @@
+name: agent
+domain: agent
+direction: 智能体          # 大方向（科技 / 金融），_index.md 据此分组
+ontology_type: domain
+description: Agent 框架 / RAG / 编排 / 记忆 / 工具调用 / 评测
+central_entity: 智能体
+hub: 智能体工程                       # Obsidian Hub 页文件名（不含 .md）
+keywords: [Agent, 智能体, LLM, 大模型, RAG, 检索增强, 编排, orchestration, 记忆, memory, 工具调用, tool use, function calling, 评测, eval, 多智能体, multi-agent, LangGraph, LangChain, prompt, 推理]                 # 路由关键词：ingest/recall 据此判断材料属哪个域
+validator: none
+validator_coverage: none
+schema_version: '2.0'
+created: '2026-06-17'
+updated: '2026-06-17'

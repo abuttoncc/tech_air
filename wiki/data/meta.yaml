@@ -1,0 +1,13 @@
+name: data
+domain: data
+direction: 全栈          # 大方向（科技 / 金融），_index.md 据此分组
+ontology_type: domain
+description: 数据库 + 存储
+central_entity: 数据层
+hub: 数据层                       # Obsidian Hub 页文件名（不含 .md）
+keywords: [数据库, database, SQL, NoSQL, PostgreSQL, MySQL, Redis, MongoDB, 向量数据库, vector, 存储, storage, 对象存储, S3, 缓存, cache, 索引, 事务, MVCC]                 # 路由关键词：ingest/recall 据此判断材料属哪个域
+validator: none
+validator_coverage: none
+schema_version: '2.0'
+created: '2026-06-17'
+updated: '2026-06-17'

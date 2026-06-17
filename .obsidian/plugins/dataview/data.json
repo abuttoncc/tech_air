@@ -1,0 +1,15 @@
+{
+  "renderNullAs": "\\-",
+  "warnOnEmptyResult": true,
+  "warnOnEmptyQueries": true,
+  "refreshEnabled": true,
+  "refreshInterval": 2500,
+  "defaultRefreshInterval": 2500,
+  "enableInlineDataview": true,
+  "enableDataviewJs": true,
+  "enableInlineDataviewJs": true,
+  "prettyRenderInlineFields": true,
+  "smartRenderInlineFields": true,
+  "completionTrigger": "\\",
+  "recursiveRendering": false
+}
