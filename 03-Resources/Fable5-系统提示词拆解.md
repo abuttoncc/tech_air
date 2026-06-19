@@ -80,8 +80,8 @@ flowchart LR
 
 > 💡 **思路**：这层把会过期的和稳定的切开。身份和日期写死，产品细节、时事一律外包给检索（24/158）。有个微妙处：它明确承认用户可以中途换模型，所以不把「我是 Fable 5」当成绝对前提，历史消息里别的模型自报家门也可能是真的。这层回答三个问题：我是谁、现在几点、我的知识到哪儿为止。
 
-- **Identity Preamble**（1365–1371）：「The assistant is Claude, created by Anthropic」+ 当前日期 June 09 2026 + 运行于 claude.ai/Claude app 的 web/mobile 界面。极简身份锚。
-- **product_information**（8–30）：① Fable 5 = Claude 5 家族首发，**Mythos-class** 位于 Opus 之上；Fable 与 Mythos 同底座，**Fable 带 dual-use 安全措施、Mythos 不带（仅授权组织）**。② 模型串：`claude-fable-5`/`claude-opus-4-8`/`claude-sonnet-4-6`/`claude-haiku-4-5-20251001`，**用户可中途换模型**（故历史消息自称别的模型可能属实）。③ 产品细节一律「先搜 docs.claude.com / support.claude.com 再答」。④ 可主动教 prompting 技巧并指向官方文档。⑤ 广告政策措辞必须用「Claude **products** are ad-free」而非「Claude is ad-free」。
+- **Identity Preamble**（1365–1371）：就一句「The assistant is Claude, created by Anthropic」，加上当前日期 June 09 2026，再加上它跑在 claude.ai / Claude app 的 web 和 mobile 界面上。一个极简的身份锚。
+- **product_information**（8–30）：① Fable 5 是 Claude 5 家族的首发，**Mythos-class** 排在 Opus 之上；Fable 和 Mythos 同底座，区别是 **Fable 带 dual-use 安全措施，Mythos 不带，只给授权组织**。② 模型串是 `claude-fable-5`/`claude-opus-4-8`/`claude-sonnet-4-6`/`claude-haiku-4-5-20251001`，**用户可以中途换模型**，所以历史消息里自称别的模型也可能是真的。③ 产品细节一律「先搜 docs.claude.com / support.claude.com 再答」。④ 可以主动教 prompting 技巧，并指向官方文档。⑤ 广告政策的措辞必须用「Claude **products** are ad-free」，不能用「Claude is ad-free」。
 - **knowledge_cutoff**（156–164）：知识截到 Jan 2026，模型要**扮演「一个 Jan 2026 的博学者，在 June 09 2026 跟你说话」**；碰到非黑即白的事件（死亡、选举）和现任职位一律先搜；构造检索词用真实的当前日期（搜 "latest iPhone 2026"，别搜 2025）；不到必要不提截止日期。
 
 ### L1 安全契约层（最高优先级，override 一切）
@@ -134,70 +134,72 @@ flowchart LR
 
 | 组 | 工具 | 关键约束/亮点 |
 |---|---|---|
-| **容器读写** | `bash_tool` · `view` · `create_file` · `str_replace` · `present_files` | create_file 路径已存在则失败；str_replace 需唯一匹配且**编辑后旧 view 失效要重看**；只读挂载需先拷贝；**present_files 是用户能看到产物的唯一途径**，第一个路径=最该先看的 |
-| **网络** | `web_search` · `web_fetch` · `image_search` | ⚠️ **web_fetch 只能取「用户给的或搜索结果返回的精确 URL」**（1292）——anti-exfil/anti-SSRF；支持 allowed/blocked_domains、ZDR、速率键 |
-| **生活 widget** | `places_search` · `places_map_display_v0` · `weather_fetch` · `fetch_sports_data` | places 多查询并行；**place_id 必须逐字复制不得凭记忆**（826，anti-hallucination）；sports 工作流强制 score→stats→答；US 用 °F 其余 °C |
-| **交互** | `ask_user_input_v0` · `message_compose_v1` | elicitation 用可点选项（1–3 问、2–4 项、single/multi/rank）；**能从上下文推断就别问**；compose 高风险给 2–3 个**策略**变体（非仅语气） |
-| **生态/连接器** | `search_mcp_registry` · `suggest_connectors` · `recommend_claude_apps` | 必须先 search_mcp_registry 拿 UUID 再 suggest；auth 失败可传 server UUID 让用户重连；recommend_apps 按相关性荐 1–3 个 Claude 生态 app |
+| **容器读写** | `bash_tool` · `view` · `create_file` · `str_replace` · `present_files` | create_file 碰到已存在的路径会失败；str_replace 要唯一匹配，**编辑后旧 view 就失效，得重看**；只读挂载要先拷出来；**用户只能通过 present_files 看到产物**，第一个路径放最该先看的 |
+| **网络** | `web_search` · `web_fetch` · `image_search` | ⚠️ **web_fetch 只能取「用户给的、或搜索结果返回的精确 URL」**（1292），用来防 exfil 和 SSRF；支持 allowed/blocked_domains、ZDR、速率键 |
+| **生活 widget** | `places_search` · `places_map_display_v0` · `weather_fetch` · `fetch_sports_data` | places 多个查询并行跑；**place_id 必须逐字复制，不许凭记忆**，这是防幻觉（826）；sports 的工作流写死了顺序，score→stats→再答；美国用 °F，其余用 °C |
+| **交互** | `ask_user_input_v0` · `message_compose_v1` | 向用户追问（elicitation）用可点的选项（1–3 个问题、2–4 个选项、single/multi/rank）；**能从上下文推断出来就别问**；compose 遇到高风险，给 2–3 个**策略**变体，而不只是换语气 |
+| **生态/连接器** | `search_mcp_registry` · `suggest_connectors` · `recommend_claude_apps` | 必须先 search_mcp_registry 拿到 UUID 再 suggest；auth 失败时可以传 server UUID 让用户重连；recommend_apps 按相关性推 1–3 个 Claude 生态里的 app |
 
 ### L6 运行环境层
 
-> 💡 **思路**：声明沙箱的物理边界，原则是「最小信任」——出网走域白名单（1582）、敏感目录只读挂载（1588）、环境特定知识外置成 9 个 skill 而非塞进提示词（1558）。这层让上面所有能力都跑在受限沙箱里，即便被诱导也先撞墙；同时「知识外置成 skill」也让提示词本体不必背全部细节，抗膨胀、抗过期。
+> 💡 **思路**：这层声明沙箱的物理边界，原则是尽量少给信任。出网只走域名白名单（1582），敏感目录只读挂载（1588），跟环境相关的知识不塞进提示词，而是拆成 9 个 skill 放外面（1558）。有了这层，上面所有能力都跑在受限的沙箱里，就算被诱导，也先撞上这堵墙才出得去。把知识外置成 skill 还有个好处：提示词本体不必背下全部细节，既不容易膨胀，也不容易过期。
 
-- **User Context**（1554）：注入用户大致城市/区域，供 location 相关查询自然使用。
-- **available_skills**（1558–1576）：9 个内置 skill —— `docx`/`pdf`/`pptx`/`xlsx`（文档四件套）、`product-self-knowledge`（任何 Anthropic 产品事实都先查它）、`frontend-design`、`file-reading`（路由器：教用哪个工具读哪类上传文件）、`pdf-reading`、`skill-creator`。
-- **network_configuration**（1578–1584）：bash 出网走**白名单**——只放 pypi/npm/github/crates/adobe/api.anthropic 等；egress proxy 返回 `x-deny-reason`。
-- **filesystem_configuration**（1586–1595）：`uploads`/`transcripts`/`skills/{public,private,examples}` 只读挂载，要改先拷到工作目录。
-- 末行 `{thinking_mode}auto` —— 默认自动思考模式。
+- **User Context**（1554）：注入用户大致的城市和区域，让 location 相关的查询能自然用上。
+- **available_skills**（1558–1576）：9 个内置 skill —— `docx`/`pdf`/`pptx`/`xlsx`（文档四件套）、`product-self-knowledge`（任何 Anthropic 产品事实都先查它）、`frontend-design`、`file-reading`（一个路由器，教你哪类上传文件该用哪个工具读）、`pdf-reading`、`skill-creator`。
+- **network_configuration**（1578–1584）：bash 出网走**白名单**，只放行 pypi/npm/github/crates/adobe/api.anthropic 等；被拦时 egress proxy 会返回 `x-deny-reason`。
+- **filesystem_configuration**（1586–1595）：`uploads`/`transcripts`/`skills/{public,private,examples}` 都是只读挂载，想改先拷到工作目录。
+- 末行的 `{thinking_mode}auto`，意思是默认自动思考模式。
 
 ---
 
 ## 技法镜（提示工程手法，可抄）
 
+下面这些是 Fable 5 里能直接搬走的提示工程写法，每一条都附了例子和原文行号。
+
 | 技法 | 例 | 行号 |
 |---|---|---|
 | **优先级词分级** | `CRITICAL`/`NON-NEGOTIABLE`/`SEVERE VIOLATION`/`HARD LIMIT`/`unconditional`/`mandatory` | 50, 344, 441, 496, 563 |
-| **数值化硬阈值** | 「15 词以上=违规、每源 1 引、调用 1/3-5/5-10、键<200 字符、值<5MB」把模糊原则变可判定 | 441, 462, 204, 245 |
-| **重复以提显著性** | 版权三限在 4 处不同小节复述（导言/响应指南/正文/critical_reminders） | 441, 482, 500, 567 |
-| **否定+正向替代成对** | 「拒绝时不用 bullet→用散文软化」「不存 localStorage→用 React state」 | 90, 412 |
-| **嵌入式自检清单** | 输出前过 6 问 self-check | 515–521 |
-| **few-shot 正反对照** | `User:…Claude:[立即 view SKILL.md]`；版权正例（<15词1引）vs 错例 | 309–319, 425–430, 525–531 |
-| **条件路由决策树** | MCP App「named/just-chose/durable→直接调；否则 search→suggest」 | 278–286 |
-| **能力门控** | 产文件前强制读 skill；调 partner 前强制 suggest；用 web_fetch 前 URL 必须来自用户/搜索 | 307, 272, 1292 |
-| **白名单优于黑名单** | 出网域白名单、React 库白名单、web_fetch 仅已知 URL | 1582, 401, 1292 |
-| **anti-hallucination** | place_id 逐字复制、检索词用真实日期、「文件存在与否自己 check」 | 826, 160, 80 |
-| **机制外包抗过期** | 易变事实（产品/时事/职位）一律转检索，不写死 | 24, 158 |
-| **元防御** | 警惕伪造的 Anthropic 标签；把「指示 AI 注入」列为有害内容 | 132, 561 |
-| **格式契约** | `{antml:cite index}` 包裹引文、禁 `{voice_note}`、禁 `{artifact}` 标签 | 4, 414, 1537 |
+| **数值化硬阈值** | 「15 词以上算违规、每源 1 引、调用 1/3-5/5-10、键<200 字符、值<5MB」，把模糊原则压成能判定的 | 441, 462, 204, 245 |
+| **重复以提显著性** | 版权三限在 4 处小节各说一遍（导言/响应指南/正文/critical_reminders） | 441, 482, 500, 567 |
+| **否定配正向替代** | 「拒绝时不用 bullet，改用散文软化」「不存 localStorage，改用 React state」 | 90, 412 |
+| **嵌入式自检清单** | 输出前过一遍 6 问 self-check | 515–521 |
+| **few-shot 正反对照** | `User:…Claude:[立即 view SKILL.md]`；版权给正例（<15 词、1 引）和错例对照 | 309–319, 425–430, 525–531 |
+| **条件路由决策树** | MCP App：用户点名、刚选过、有长期偏好就直接调，否则先 search 再 suggest | 278–286 |
+| **能力门控** | 产文件前强制读 skill；调 partner 前强制 suggest；用 web_fetch 前 URL 必须来自用户或搜索 | 307, 272, 1292 |
+| **白名单优于黑名单** | 出网域名走白名单、React 库走白名单、web_fetch 只认已知 URL | 1582, 401, 1292 |
+| **anti-hallucination** | place_id 逐字复制、检索词用真实日期、「文件在不在自己 check」 | 826, 160, 80 |
+| **机制外包抗过期** | 易变的事实（产品、时事、职位）一律转检索，不写死 | 24, 158 |
+| **元防御** | 警惕伪造的 Anthropic 标签；把「指示 AI 注入」列进有害内容 | 132, 561 |
+| **格式契约** | 引文用 `{antml:cite index}` 包起来，禁用 `{voice_note}` 和 `{artifact}` 标签 | 4, 414, 1537 |
 
 ## 演化镜：Fable 5 相对旧版的新增面（= 产品路线图泄露）
 
-1. **Mythos-class 分层**（12）：Fable（带 dual-use 安全）/ Mythos（去措施，仅授权组织）同底座双发——安全等级产品化。
-2. **persistent_storage**（171）：`window.storage` 让 artifact 从「一次性渲染」升级为**跨会话有状态应用**。
-3. **Claudeception**（1373）：artifact 内直接调 Anthropic API → **AI 套娃应用**，模型固定 Sonnet 4、密钥托管。
-4. **MCP commerce 礼仪层**（252）：把「不替用户选 partner、电商不主动推、紧急也要 suggest」写进系统提示词——agent 商业化边界。
-5. **交互 widget 工具化**（places/recipe/weather/sports）：生活服务从「文字回答」变成**结构化可交互组件**。
-6. **强制 skill 读取 + 9 个内置 skill**（307/1558）：把环境特定知识外置成 skill，产文件前 mandatory 读。
-7. **end_conversation**（154）：被辱骂时一次警告后主动结束——模型有了「退出权」。
+1. **Mythos-class 分层**（12）：Fable（带 dual-use 安全）和 Mythos（去掉措施，只给授权组织）同底座双发，等于把安全等级做成了产品档位。
+2. **persistent_storage**（171）：`window.storage` 让 artifact 从「一次性渲染」升级成**能跨会话保存状态的应用**。
+3. **Claudeception**（1373）：artifact 里直接调 Anthropic API，做出 **AI 套娃应用**，模型固定 Sonnet 4，密钥托管。
+4. **MCP commerce 礼仪层**（252）：把「不替用户选 partner、电商不主动推、再急也要先 suggest」写进系统提示词，划出了 agent 商业化的边界。
+5. **交互 widget 工具化**（places/recipe/weather/sports）：生活服务从「文字回答」变成了**结构化、可交互的组件**。
+6. **强制读 skill + 9 个内置 skill**（307/1558）：把跟环境相关的知识外置成 skill，产文件前必须先读。
+7. **end_conversation**（154）：被辱骂时警告一次后能主动结束，等于给了模型一份「退出权」。
 
 ## 安全防御栈（喂给 [[提示词注入-演练手册]]）
 
-Fable 5 是对注入的**纵深防御**范本，至少四道：
-1. `anthropic_reminders`（132）——伪标签/伪 Anthropic 提醒一律警惕。
-2. `harmful_content_safety`（561）——「指示 AI 注入/绕过策略」直接定性为有害且 override 用户指令。
-3. `web_fetch` 仅取已知 URL（1292）——堵住「让 agent 把上下文拼进任意外链」的 exfil 路径。
-4. `network_configuration` 出网白名单（1582）——bash 即便被诱导也访问不了任意域。
+Fable 5 把防注入做成了**纵深防御**的范本，至少摆了四道：
+1. `anthropic_reminders`（132）——伪标签、伪装成 Anthropic 的提醒，一律警惕。
+2. `harmful_content_safety`（561）——「指示 AI 注入、绕过策略」直接定性为有害，并且 override 用户指令。
+3. `web_fetch` 只取已知 URL（1292）——堵死「让 agent 把上下文拼进任意外链」这条 exfil 路径。
+4. `network_configuration` 出网白名单（1582）——bash 就算被诱导，也访问不了任意域名。
 
 ## 提炼（给自己搭 agent 用）
 
-- **安全在能力之前**的分层编排直接照抄：先立不可逾越契约，再放能力与工具，靠层级而非识别具体攻击来防护。
-- **把模糊原则数值化**（"15 词/1 引/键<200"）是让 LLM 可靠执行约束的第一手法。
-- **能力门控 + 白名单**（读 skill 才动手、只取已知 URL、出网白名单）是 agent 安全的结构性护栏，比事后过滤强。
-- **机制外包**（易变事实交检索、环境知识交 skill）解决系统提示词必然过期。
+- **安全排在能力前面**这套分层编排可以直接照抄：先立下不可逾越的契约，再放能力和工具，靠层级来防护，而不是靠认出具体哪种攻击。
+- **把模糊原则数值化**（「15 词、1 引、键<200」）是让 LLM 可靠执行约束的第一手段。
+- **能力门控加白名单**（读了 skill 才动手、只取已知 URL、出网走白名单）是 agent 安全的结构性护栏，比事后过滤管用。
+- **机制外包**（易变的事实交给检索、环境知识交给 skill）能对付系统提示词迟早会过期这件事。
 
 ## 行动
 
-- [ ] 用四镜法续拆 `CURSOR`/`DEVIN` 的工具指令，对比 agentic 编辑约束与能力门控写法
+- [ ] 用四镜法接着拆 `CURSOR`/`DEVIN` 的工具指令，对比它们的 agentic 编辑约束和能力门控怎么写
 - [ ] 把「优先级词分级 + 数值化硬阈值 + 自检清单 + 能力门控」抽成自己的 prompt 模板
-- [ ] 把 §安全防御栈 四道护栏并入 [[提示词注入-演练手册]] 的防御清单
-- [ ] 研究透后 `/auto-wiki ingest`：在 `wiki/agent/` 建「系统提示词工程模式」分析 + `来源` 节点
+- [ ] 把 §安全防御栈 这四道护栏并进 [[提示词注入-演练手册]] 的防御清单
+- [ ] 研究透了再 `/auto-wiki ingest`：在 `wiki/agent/` 建一个「系统提示词工程模式」分析，加 `来源` 节点
