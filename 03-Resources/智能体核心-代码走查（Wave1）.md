@@ -266,3 +266,43 @@ assert not (out[0].content and out[0].content == out[0].reasoning_content)
 - 卡住或有顿悟 → 丢 `Inbox/`，下轮 ingest 原料。
 - 真要内化：**主题 D 的"自己 trace"**（一个工具调用从图事件到 SSE）+ **主题 E 的两个 war story**（能复述根因和修复），是 Wave 1 性价比最高的两块。
 - 想继续：Wave 2（U5–U8）会把多租户/记忆/事件溯源织进 data 域——那时再开一轮代码走查。
+
+---
+
+## 附录 · L3+L4 已对生产验证（2026-06-19）
+
+> 用 `.claude/skills/dpagt-testing` 的方法学，对真实后端 `ab.itseek.cc` 跑了一次，确认主题 D 的通路。
+> 输入：「用搜索工具查一下『宁德时代』最近的一条公开动态，只查一次，两句话总结」｜`controller_mode: on`｜23s 完成。
+> 后端版本 `revision_id: 04c6a7c`、`deepagents: 0.6.8`、`permission_mode: default`。原始数据 `dpagt/docs/observability/runs/trace-verify-2026-06-19/`。
+
+### L3 — 真实 SSE wire（有序，与本文 trace 叙述一致）
+```
+data-agent-progress(planning) → reasoning-start/delta×18 → data-title
+→ data-agent-progress(tool_start, seq1, "宁德时代 最新动态") → reasoning-end
+→ tool-input-start/delta/available {web_search, query:"宁德时代 最新动态", count:5, time_filter:oneWeek}
+→ data-event(emitted, startedAt=null) → data-agent-progress(tool_end, seq2)
+→ source-url×10 → tool-output-available → data-event(ended, startedAt=13:41:41.8)
+→ reasoning-start/delta×72 → text-start/delta×18（最终答案）→ text-end
+→ finish → data-checkpoint → [DONE]
+```
+恰好一次工具调用；reasoning↔text 路由、StatusEnricher 注 tool_start、writer 在工具前闭合 reasoning、3 行 tool-input、data-event 双写——全部如 trace 预测兑现。
+
+### L4 — LangSmith trace 树（emit ≠ trace 上得到，已坐实）
+- 主 trace **`dpagt-main`** `trace_id=019ee01d-9818-70a2-b0e4-08211aaeb842`（13:41:36→56）。
+- **中间件真被调用**：子 span `TodoListMiddleware.after_model`（`langgraph_node` / `langgraph_step:57`），chain 类 span `total_pages:40` —— 中间件栈逐个跑成图节点。
+- **工具真执行**：`web_search` tool span `13:41:42.19→44.78`（2.6s，`status:success`，`ls_run_depth:17`），`tool_call_id` 与 AIMessage 一致。
+- **fold-fix 根因**：决定调工具的 AIMessage `content=""` + `reasoning_content="The user wants…"` + `tool_calls=[web_search]`——推理与 content 结构隔离，活体（[[推理内容回传]]）。`input_tokens=117636`（巨型系统提示，`cache_creation=117528`）。
+- **RouterChatModel** 确认：`ls_provider: routerchatmodel`（[[供应商中立路由]]）。`title_generate` 是独立 root trace（`parent_run_id=null`）= TitleTap 后台 LLM 调用，对应 wire 的 `data-title`。
+
+### wire ↔ trace 互证
+| L3 wire | L4 trace |
+|---|---|
+| tool-input-available `{web_search, 宁德时代 最新动态}` | AIMessage.tool_call + web_search span，id 一致 |
+| data-event(ended) startedAt=13:41:41.8 | tool span 实际 13:41:42→44.8 |
+| 调工具前的话走 reasoning（非 text） | AIMessage `content="" + reasoning_content`（根因） |
+| data-title「宁德时代最新公开动态」 | `backagent:title_generate` 独立 root 产出同标题 |
+
+### 待求证的一个 nuance 🔍
+wire 上 `data-checkpoint` 出现在 `finish` 之后、`[DONE]` 之前。对照 `dpagt/docs/spec/protocol/sse-events.md::MUST-finish-event-last`：该不变量是只约束生命周期事件、容许 data-* 旁路尾随，还是 checkpoint 应在 finish 前？留作自测。
+
+> **闭环**：wiki 知识（U1–U4）→ 代码走查 → 一条 trace 叙述 → L3 真后端 wire → L4 trace 树，全部对得上。这条通路「真验过」。
