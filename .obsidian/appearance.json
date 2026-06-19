@@ -4,6 +4,6 @@
   ],
   "cssTheme": "Burrow",
   "translucency": false,
-  "interfaceFontFamily": "Andale Mono",
-  "textFontFamily": "Helvetica,IBM Plex Mono"
+  "interfaceFontFamily": "Andale Mono,Helvetica",
+  "textFontFamily": "Georgia,PT Serif,PingFang SC,Arial Narrow,Courier,GungSeo"
 }
