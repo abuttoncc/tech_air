@@ -3,5 +3,7 @@
     "dashboard"
   ],
   "cssTheme": "Burrow",
-  "translucency": false
+  "translucency": false,
+  "interfaceFontFamily": "Andale Mono",
+  "textFontFamily": "Helvetica,IBM Plex Mono"
 }
