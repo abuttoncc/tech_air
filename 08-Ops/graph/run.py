@@ -107,6 +107,17 @@ def cmd_graph(args):
         print("nodes:", [n for n in g.nodes])
 
 
+def cmd_health(args):
+    """纯程序快查（供 hook 调用）：只跑确定性 lint 节点，一行健康摘要，不写状态、不调 LLM。"""
+    from pipeline import node_lint
+    try:
+        r = node_lint({})
+        print(f"[wiki health] {r['lint_result']} · pass={r['passed']} "
+              f"fail={r['failed']} holes={r['holes']}")
+    except Exception as e:
+        print(f"[wiki health] SKIP ({e})")
+
+
 def main():
     ap = argparse.ArgumentParser(description="tech_air 决策平台 LangGraph CLI")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -121,6 +132,8 @@ def main():
     p.set_defaults(fn=cmd_show)
 
     p = sub.add_parser("graph"); p.set_defaults(fn=cmd_graph)
+
+    p = sub.add_parser("health"); p.set_defaults(fn=cmd_health)
 
     args = ap.parse_args()
     args.fn(args)
