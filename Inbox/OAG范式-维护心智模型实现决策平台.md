@@ -6,7 +6,7 @@ topic: "OAG 范式：维护心智模型 → 实现决策平台"
 created: "2026-06-22"
 updated: "2026-06-23"
 wiki-topic: "本体增强生成"
-compiled: false        # 待 /auto-wiki ingest 编译进 wiki/agent
+compiled: true         # 2026-06-23 已 ingest 进 wiki/agent，见 [[OAG决策平台范式]] + 9 节点
 digested:
 triage:
 sinks: []

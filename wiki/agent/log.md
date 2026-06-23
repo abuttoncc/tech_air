@@ -37,3 +37,15 @@
 - data.db: pages 9（+2）, relations 13（+2）
 - Conflicts: (无)
 - 说明: 纯 agent 域。LLM 供应商实体节点（DashScope/OpenAI 等）暂不建——保持"供应商中立"为抽象模式，避免堆 6 个 provider 页。war story 的具体数值（fold +%、事故 conv）留在来源 NOTES，正文只引述结论（不伪造 T0 period）。
+
+## 2026-06-23 — ingest U5（OAG 决策中心范式）｜Wave 2 起
+- Source: 来源/2024-01-05-palantir-connecting-ai-to-decisions（Palantir 首席架构师，一手；母本散文 Inbox/OAG范式-维护心智模型实现决策平台.md；PDF 存档 09-Attachments/）
+- Created 原理(3): 检索增强生成(RAG), 本体增强生成(OAG), 决策血缘
+- Created 模式(6): 决策中心架构, 工具调用编排, 逻辑绑定, 沙盒情景, 写回模式, 人在回路
+- Created 技术(1): Palantir 本体
+- Created 分析(1): OAG决策平台范式
+- Relations(+15): 本体增强生成→检索增强生成 built_on; 决策中心架构→本体增强生成 built_on; {工具调用编排,写回模式,沙盒情景,人在回路,决策血缘}→决策中心架构 part_of; 逻辑绑定→工具调用编排 part_of; Palantir 本体→{决策中心架构,本体增强生成,逻辑绑定,写回模式,沙盒情景,决策血缘} implements; Palantir 本体→智能体 classified_as
+- data.db: pages 21（+12）, relations 28（+15）; DataPoints/Facts/Events 0（本篇无 T0 数值/T1 状态翻转/T4 事件）
+- Schema: 21/21 PASSED
+- Conflicts: (无)
+- 说明: 纯 agent 域。analysis 的 references 边只写 frontmatter（不进语义图/data.db，遵 references 不进语义图规则）。跨域 built_on 边本轮暂缺——OAG 范式不直接锚到现有全栈节点(PostgreSQL/AI SDK v6/SSE)，不硬建 Docker/HuggingFace 凑边。补齐了母本笔记欠的 Action 一柱（写回/沙盒/人在回路）与决策中心学习（决策血缘）。
