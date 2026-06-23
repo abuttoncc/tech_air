@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/opt/homebrew/opt/python@3.12/bin/python3.12 \"${CLAUDE_PROJECT_DIR}/08-Ops/graph/run.py\" health --json 2>/dev/null",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

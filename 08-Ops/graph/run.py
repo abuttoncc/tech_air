@@ -112,10 +112,17 @@ def cmd_health(args):
     from pipeline import node_lint
     try:
         r = node_lint({})
-        print(f"[wiki health] {r['lint_result']} · pass={r['passed']} "
-              f"fail={r['failed']} holes={r['holes']}")
+        msg = (f"tech_air wiki health: {r['lint_result']} · "
+               f"通过 {r['passed']} 失败 {r['failed']} 结构空洞 {r['holes']} "
+               f"（4 域：agent/web/data/infra）")
     except Exception as e:
-        print(f"[wiki health] SKIP ({e})")
+        msg = f"tech_air wiki health: SKIP ({e})"
+    if getattr(args, "json", False):
+        import json
+        print(json.dumps({"hookSpecificOutput": {
+            "hookEventName": "SessionStart", "additionalContext": msg}}))
+    else:
+        print(msg)
 
 
 def main():
@@ -133,7 +140,8 @@ def main():
 
     p = sub.add_parser("graph"); p.set_defaults(fn=cmd_graph)
 
-    p = sub.add_parser("health"); p.set_defaults(fn=cmd_health)
+    p = sub.add_parser("health"); p.add_argument("--json", action="store_true")
+    p.set_defaults(fn=cmd_health)
 
     args = ap.parse_args()
     args.fn(args)

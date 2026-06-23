@@ -50,13 +50,25 @@ $PY run.py graph
 - **LLM 节点后端**：headless `claude -p`，复用 Claude Code 登录，**无需 ANTHROPIC_API_KEY**。换成 Anthropic API 只需改 `pipeline.py` 的 `_claude()`。
 - **持久化**：`SqliteSaver` → `checkpoints.sqlite`。状态可中断、可恢复、可跨进程追溯。比照 `data.db-wal`，checkpoint 是运行态，**不入库**（已 gitignore）。
 
-## 与 bin/structure-lint.sh 的关系
+## 谁来触发：智能体管理，不靠 OS cron
 
-- `bin/structure-lint.sh`：轻量、纯确定性，launchd 每周一拉起做健康巡检。
-- `graph/`：完整决策回路（含 research + 人审 + 候选收口）。lint 节点逻辑与 shell 版一致，但多了缺口补全和人审闸。
+自动化只走两种形态——**确定性程序**（图的工具节点）或 **LLM 调用**（research 节点壳调 claude）——统一收在这张图里，再以两种接口交给智能体管理：
 
-**想让 launchd 改拉 graph**：把 plist 的 ProgramArguments 换成
-`$PY 08-Ops/graph/run.py start --thread weekly-$(date +%F)` 即可（dry-run 安全；要 live 跑 research 需先验证无头 claude 在 launchd 环境可用）。
+| 接口 | 形态 | 触发时机 | 文件 |
+|---|---|---|---|
+| **工具** | slash 命令 `/ops` | 智能体/你主动调（run/approve/show/health/status） | `.claude/commands/ops.md` |
+| **hook** | SessionStart | 每次开会话自动跑 `health`，把库健康度注入上下文 | `.claude/settings.json` |
+
+- `/ops` 让智能体能驱动整张图（含人审中断的转述与恢复）。
+- SessionStart hook 调 `run.py health --json`（纯确定性、不调 LLM、~1.5s），输出 `hookSpecificOutput.additionalContext`，会话一开就知道 wiki 健康。关掉就删 `.claude/settings.json` 里的 SessionStart 块。
+
+## 与 launchd / bin 的关系（已退居冗余）
+
+`bin/structure-lint.sh` + launchd（`com.techair.structure-lint`）是早先的 OS-cron 路径。现在触发已收回到智能体侧（tool + hook），launchd **冗余**，可保留作离线兜底，也可卸载：
+
+```bash
+launchctl unload ~/Library/LaunchAgents/com.techair.structure-lint.plist
+```
 
 ## 扩展（下一批节点）
 
