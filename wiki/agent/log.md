@@ -49,3 +49,14 @@
 - Schema: 21/21 PASSED
 - Conflicts: (无)
 - 说明: 纯 agent 域。analysis 的 references 边只写 frontmatter（不进语义图/data.db，遵 references 不进语义图规则）。跨域 built_on 边本轮暂缺——OAG 范式不直接锚到现有全栈节点(PostgreSQL/AI SDK v6/SSE)，不硬建 Docker/HuggingFace 凑边。补齐了母本笔记欠的 Action 一柱（写回/沙盒/人在回路）与决策中心学习（决策血缘）。
+
+## 2026-06-24 — ingest（声明式 agent 定义）
+- Source: 来源/2026-06-24-langchain-deepagents-docs（LangChain Deep Agents 官方文档，一手）
+- Created 模式(1): 声明式智能体定义 —— agent 是声明式文件不是代码：dict/AGENTS.md 描述「是什么」，引擎跑循环；声明式优先、代码兜底（CompiledSubAgent 塞 LangGraph 图）
+- Created 来源(1): 2026-06-24-langchain-deepagents-docs
+- Updated: 技术/deepagents（+implements→声明式智能体定义，正文补 AGENTS.md/字典声明）；hub 智能体工程（模式 9→10、来源 2→3、结构图 deepagents 行）
+- Relations(+1): deepagents→声明式智能体定义 implements
+- data.db: pages 23（+2）, relations 29（+1）; DataPoints/Facts/Events 0（纯概念，无 T0/T1/T4）
+- Schema: 23/23 PASSED; 位置编码 26 节点重算; _report.html 重建
+- Conflicts: (无)
+- 说明: 与既有 模式/中间件分层编排 相邻但不同——后者讲「能力」声明式装配，本节点讲「整个 agent 身份」声明式描述，prose 互链不强建越界边。未对 LangGraph/子agent编排 建 typed 边（对照关系无受控词，子agent编排 无节点），仅 prose 引用避免断链。
